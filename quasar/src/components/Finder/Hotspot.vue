@@ -1,10 +1,11 @@
 <template>
   <div style="layout-padding">
-    <h1>Needed for hotspot: {{ hotspotName }}</h1>
+    <h1>Needed for hotspot: {{ hotspotNeeded[0].locName }}</h1>
     <table>
       <tr v-for='bird in hotspotNeeded'>
         <td v-on:click='changeMode("species")'>{{ bird.comName }}</td>
-        <td v-on:click='changeMode("hotspot", bird, active)'>{{ bird.locName }}</td>
+        <td>{{ bird.sciName }}</td>
+        <td>{{ bird.howMany }}</td>
         <td>{{ bird.obsDt }}</td>
       </tr>
     </table>
@@ -24,35 +25,19 @@ export default {
       return this.$store.state.activeHotspot
     }
   },
-  data () {
-    return {
-      active: '',
-      activeID: '',
-      mode: 'all'
-    }
+  created () {
+    this.getHotspotData(this.$route.params.countyID, this.$route.params.hotspotID)
   },
   methods: {
-    getRecentBirds (countyNumber, countyName) {
+    getHotspotData (countyID, hotspotID) {
       this.loading = true
-      this.$store.dispatch('GET_RECENT', countyNumber).then(() => {
+      let params = {
+        countyID: countyID,
+        hotspotID: hotspotID
+      }
+      this.$store.dispatch('GET_HOTSPOT', params).then(() => {
         this.loading = false
       })
-      this.active = countyName
-      this.activeID = countyNumber
-    },
-    changeMode (mode, data) {
-      this.loading = true
-      this.mode = mode
-      if (mode === 'hotspot') {
-        var params = {
-          locID: data.locID,
-          locName: data.locName,
-          countyID: this.activeID
-        }
-        this.$store.dispatch('GET_HOTSPOT', params).then(() => {
-          this.loading = false
-        })
-      }
     }
   }
 }

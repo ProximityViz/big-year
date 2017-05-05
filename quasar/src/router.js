@@ -27,8 +27,18 @@ export default new VueRouter({
       children: [
         {
           path: '/finder',
-          component: load('Finder')
-        } // Default
+          component: load('Finder/Finder'),
+          children: [
+            {
+              path: ':countyID',
+              component: load('Finder/County')
+            }
+          ]
+        },
+        {
+          path: '/finder/:countyID/hotspot/:hotspotID',
+          component: load('Finder/Hotspot')
+        }
       ]
     }, // Default
     { path: '*', component: load('Error404') } // Not found

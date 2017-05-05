@@ -35,6 +35,7 @@ const store = new Vuex.Store({
   },
   mutations: {
     SET_HOTSPOT: (state, response) => {
+      console.log(response)
       state.hotspotNeeded = []
       state.activeHotspot = response.hotspot
       for (var item of response.data) {
@@ -49,7 +50,6 @@ const store = new Vuex.Store({
     SET_RECENT_NEEDED: (state, response) => {
       state.recentNeeded = []
       state.activeCounty = response.countyNumber
-      console.log(state.activeCounty)
       for (var item of response.data) {
         if (!state.birdsSeen[response.countyNumber].includes(item.comName)) {
           state.recentNeeded.push(item)
@@ -64,9 +64,8 @@ const store = new Vuex.Store({
     GET_HOTSPOT: (state, params) => {
       axios.create({
         baseURL: 'https://ebird.org/ws1.1/data/obs/hotspot/recent'
-      }).get('?fmt=json&back=7&r=' + params.locID).then(response => {
+      }).get('?fmt=json&back=7&r=' + params.hotspotID).then(response => {
         response.countyNumber = params.countyID
-        response.hotspot = params.locName
         state.commit('SET_HOTSPOT', response)
       })
     },
